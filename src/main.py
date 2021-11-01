@@ -29,7 +29,9 @@ def main(repo_token):
     # Get file content
 
     # 1 MB limit
-    issue = remote_repo.get_contents("data/.gitkeep", "main")
+    file_content = remote_repo.get_contents("data/.gitkeep", "main")
+
+    pprint(file_content)
 
     # Calculate file hash
 
