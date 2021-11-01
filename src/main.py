@@ -33,15 +33,13 @@ def main(repo_token):
 
     pprint(file_content)
 
-    # Get dir info
+    # Get file sha
 
-    # 1 MB limit
     dir_content = remote_repo.get_contents("data", "main")
 
     for file in dir_content:
-        print("File: ", file.path, " sha:", file.sha)
-
-    pprint(dir_content)    
+        if (file.path == "data/000001-42.600.2.tif"):
+            print("File: ", file.path, " sha:", file.sha)
 
     # Calculate file hash
 
