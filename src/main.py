@@ -40,23 +40,27 @@ def main(repo_token):
     for file in dir_content:
         if (file.path == "data/000001-42.600.2.tif"):
             print("File: ", file.path, " sha:", file.sha)
+            remote_sha = file.sha
 
     # Calculate file hash
 
     local_repo = Repo("/app")
 
-    sha = local_repo.git.hash_object('data/000001-42.600.2.tif')
+    local_sha = local_repo.git.hash_object('data/000001-42.600.2.tif')
 
-    print("sha for data/000001-42.600.2.tif (git hash-object data/000001-42.600.2.tif)", sha)
+    print("sha for data/000001-42.600.2.tif (git hash-object data/000001-42.600.2.tif)", local_sha)
 
-    # Update binary file. Update data/000002-42.600.2.tif with the same content
+    # Update binary file. Update data/000001-42.600.2.tiff with the same content
 
-    # branch = "main"
-    # commit_message = f'Update file data/000001-42.600.2.tif'
-    # content = open("data/000001-42.600.2.tif", "rb").read()
-    # content_base64 = base64.encodebytes(content)
-    # response = remote_repo.update_file(
-    #     "000002-42.600.2.tif", commit_message, content, sha, branch)
+    branch = "main"
+    commit_message = f'Update file data/000001-42.600.2.tif'
+    content = open("data/000001-42.600.2.tif", "rb").read()
+    content_base64 = base64.encodebytes(content)
+    response = remote_repo.update_file(
+        "000001-42.600.2.tif", commit_message, content, remote_sha, branch)
+
+    pprint(response)
+    print("Commit sha: ", response['commit'].sha)
 
 
 if __name__ == "__main__":
