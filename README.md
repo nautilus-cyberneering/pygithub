@@ -9,6 +9,6 @@ Run:
 ```
 docker run --rm -it \
   --env-file .env \
-  --volume $(pwd)/src:/app \
+  --volume $(pwd):/app \
   pygithub
 ```

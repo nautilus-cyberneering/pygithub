@@ -19,4 +19,4 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 COPY ./src /app
 RUN rm -rf /app/test
-CMD ["python", "/app/main.py"]
+CMD ["python", "/app/src/main.py"]
