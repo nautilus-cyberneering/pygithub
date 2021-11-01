@@ -55,7 +55,6 @@ def main(repo_token):
     branch = "main"
     commit_message = f'Update file data/000001-42.600.2.tif'
     content = open("data/000001-42.600.2.tif", "rb").read()
-    content_base64 = base64.encodebytes(content)
     response = remote_repo.update_file(
         "000001-42.600.2.tif", commit_message, content, remote_sha, branch)
 
