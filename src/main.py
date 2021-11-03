@@ -65,10 +65,21 @@ def main(repo_token):
     commit_message = f'Update file data/000001-42.600.2.tif'
     content = open("data/000001-42.600.2.tif", "rb").read()
     response = remote_repo.update_file(
-        "000001-42.600.2.tif", commit_message, content, remote_sha, branch)
+        "data/000001-42.600.2.tif", commit_message, content, remote_sha, branch)
 
     pprint(response)
     print("Commit sha: ", response['commit'].sha)
+
+    # Create binary file
+
+    branch = "main"
+    commit_message = f'Create file data/000003-42.600.2.tif'
+    content = open("data/000001-42.600.2.tif", "rb").read()
+    response = remote_repo.update_file(
+        "data/000003-42.600.2.tif", commit_message, content, remote_sha, branch)
+
+    pprint(response)
+    print("Commit sha: ", response['commit'].sha)    
 
 
 if __name__ == "__main__":
