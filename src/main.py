@@ -8,6 +8,11 @@ from github import Github
 
 
 def main(repo_token):
+
+    ##
+    # Remote git repo using GitHub API
+    ##
+
     gh = Github(repo_token)
 
     repository = "josecelano/pygithub"
@@ -41,6 +46,10 @@ def main(repo_token):
         if (file.path == "data/000001-42.600.2.tif"):
             print("File: ", file.path, " sha:", file.sha)
             remote_sha = file.sha
+
+    ##
+    # Local git repo using Python git wrapper
+    ##
 
     # Calculate file hash
 
