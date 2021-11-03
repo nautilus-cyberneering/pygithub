@@ -47,18 +47,6 @@ def main(repo_token):
             print("File: ", file.path, " sha:", file.sha)
             remote_sha = file.sha
 
-    ##
-    # Local git repo using Python git wrapper
-    ##
-
-    # Calculate file hash
-
-    local_repo = Repo("/app")
-
-    local_sha = local_repo.git.hash_object('data/000001-42.600.2.tif')
-
-    print("sha for data/000001-42.600.2.tif (git hash-object data/000001-42.600.2.tif)", local_sha)
-
     # Update binary file. Update data/000001-42.600.2.tiff with the same content
 
     branch = "main"
@@ -79,7 +67,19 @@ def main(repo_token):
         "data/000003-42.600.2.tif", commit_message, content, branch)
 
     pprint(response)
-    print("Commit sha: ", response['commit'].sha)    
+    print("Commit sha: ", response['commit'].sha)
+
+    ##
+    # Local git repo using Python git wrapper
+    ##
+
+    # Calculate file hash
+
+    local_repo = Repo("/app")
+
+    local_sha = local_repo.git.hash_object('data/000001-42.600.2.tif')
+
+    print("sha for data/000001-42.600.2.tif (git hash-object data/000001-42.600.2.tif)", local_sha)
 
 
 if __name__ == "__main__":
