@@ -21,7 +21,7 @@ jobs:
 
       - name: Run example
         run: |
-          docker run --rm -it \
+          docker run --rm \
             --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             pygithub \
             python 01_sign_commit_using_github_api.py
