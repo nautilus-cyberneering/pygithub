@@ -60,14 +60,14 @@ def main(repo_token):
 
     # Create binary file
 
-    branch = "main"
-    commit_message = f'Create file data/000003-42.600.2.tif'
-    content = open("data/000001-42.600.2.tif", "rb").read()
-    response = remote_repo.create_file(
-        "data/000003-42.600.2.tif", commit_message, content, branch)
+    # branch = "main"
+    # commit_message = f'Create file data/000003-42.600.2.tif'
+    # content = open("data/000001-42.600.2.tif", "rb").read()
+    # response = remote_repo.create_file(
+    #     "data/000003-42.600.2.tif", commit_message, content, branch)
 
-    pprint(response)
-    print("Commit sha: ", response['commit'].sha)
+    # pprint(response)
+    # print("Commit sha: ", response['commit'].sha)
 
     ##
     # Local git repo using Python git wrapper
