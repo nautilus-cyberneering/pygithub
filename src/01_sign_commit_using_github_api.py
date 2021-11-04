@@ -5,6 +5,11 @@ from pprint import pprint
 from github import Github
 
 
+# If you run this example using your personal token the commit is not going to be verified.
+# It only works for commits made using a token generated for a bot/app like the one you have
+# during the workflow job execution.
+# The sample workflow "sample-01.yml" uses the GITHUB_TOKEN and auto-commits are verified.
+
 def main(repo_token):
 
     gh = Github(repo_token)
