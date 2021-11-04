@@ -1,14 +1,15 @@
-# Wrapper for PyGithub package
+## Wrapper for PyGithub package
+
+This repo is a sample repo containing some examples about how to sign commits automatically using GitHub.
+
+## Build and run
 
 Build:
 ```
-docker build --no-cache -t pygithub .
+./bin/build.sh
 ```
 
-Run:
+Run all examples in ``src/main.py:
 ```
-docker run --rm -it \
-  --env-file .env \
-  --volume $(pwd):/app \
-  pygithub
+./bin/run.sh
 ```
