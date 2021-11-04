@@ -1,0 +1,27 @@
+name: Test workflow for sample 01
+
+on:
+  schedule:
+    - cron:  '0 * * * *'
+  push:
+    branches: [ main ]
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Build docker image
+        run: ./bin/build.sh
+
+      - name: Run example
+        run: |
+          docker run --rm -it \
+            --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            pygithub \
+            python 01_sign_commit_using_github_api.py
