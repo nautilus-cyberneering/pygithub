@@ -72,11 +72,37 @@ The alternative solution could be to use your own PGP Key.
 
 ## Solution 02: using your own PGP Key as a secret
 
-TODO
+If you do not want to use the GITHUB_TOKEN you ca use your own GPG Key. For this example I'm not going to use the GiPython package becuase it seems it dnoes support commit signing directly. I'm going to use a GitHub Action that imports and sets up a GPG key in your workflow git configuration.
 
-Action: https://github.com/marketplace/actions/import-gpg
+[sample-02.yml](./../.github/workflows/sample-02.yml)
 
-Does it make sense: https://github.com/actions/runner/issues/667#issuecomment-940441757?
+First at all, you need a PGP key. I did not want to use my personal PGP key becuase it's going to be exposed as a repo secret. That means every mantainer (who can have access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (https://github.com/josecelano-bot) and I gave access to the bot to this repo.
+
+Then, you only need to follow the steps on the [action documentation](https://github.com/marketplace/actions/import-gpg):
+
+1. Export the Bot's PGP secret key:
+```
+gpg --armor --export-secret-key bot@josecelano.com -w0
+```
+
+2. Add the secrets to your repo: PGP secret key and passphrase
+
+Does it make sense to use a shared PGP key? All mantainers will have access to the key. 
+
+There is diffrenet proposal in a GitHub runner issue: https://github.com/actions/runner/issues/667#issuecomment-940441757
+
+> The actual feature we should propose is to recognize myname+actions@github.com as a non-human account associated with me, and can be verified by my GPG keys. All I need is to store a private key as actions secret and use it for signing the commits.
+
+If I understand the proposal, that means all automatic commits will be signed with the PGP key of the developer who triggered the workflow, just telling GitHub your PGP secret key and using an specific email for the commit author `josecelano+actions@github.com`. In the end, it's almost the same as creating your own bot account, but with two more advantages:
+
+* You do not have to pay for an extra seat (depending on the GitHub licence you are using).
+* You do not have to share that key with other mantainers.
+
+## Notes
+
+[GiPython](https://github.com/gitpython-developers/GitPython) does not support commit signing directly:
+* https://github.com/gitpython-developers/GitPython/issues/580
+* https://github.com/gitpython-developers/GitPython/issues/579
 
 ## Links
 

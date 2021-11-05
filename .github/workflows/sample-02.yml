@@ -1,0 +1,35 @@
+name: Test workflow for sample 02
+
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+  push:
+    branches: [ main ]
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Import GPG key
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: GPG user IDs
+        run: |
+          echo "fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}"
+          echo "keyid:       ${{ steps.import-gpg.outputs.keyid }}"
+          echo "name:        ${{ steps.import-gpg.outputs.name }}"
+          echo "email:       ${{ steps.import-gpg.outputs.email }}"
+
+      - name: Sign commit and push changes
+        run: |
+          NOW=$(date)
+          echo $NOW > data/latest_datetime_sample_02.txt
+          git add data/latest_datetime_sample_02.txt
+          git commit -S -m "update datetime to "
+          git push
