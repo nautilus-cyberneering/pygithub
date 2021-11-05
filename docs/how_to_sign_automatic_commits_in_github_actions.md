@@ -87,6 +87,10 @@ gpg --armor --export-secret-key bot@josecelano.com -w0
 
 2. Add the secrets to your repo: PGP secret key and passphrase
 
+If you follow the process your commits will be signed like this:
+
+![Signed commit with custom PGP key](images/commit-signed-with-custom-pgp-key.png)
+
 Does it make sense to use a shared PGP key? All mantainers will have access to the key. 
 
 There is diffrenet proposal in a GitHub runner issue: https://github.com/actions/runner/issues/667#issuecomment-940441757

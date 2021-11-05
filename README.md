@@ -2,6 +2,8 @@
 
 This repo is a sample repo containing some examples about how to sign commits automatically using GitHub.
 
+You can read the full article [here](docs/how_to_sign_automatic_commits_in_github_actions.md).
+
 ## Build and run
 
 Build docker image:
