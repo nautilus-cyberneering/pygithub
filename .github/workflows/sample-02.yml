@@ -28,6 +28,8 @@ jobs:
 
       - name: Sign commit and push changes
         run: |
+          git config --global user.email "${{ steps.import-gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import-gpg.outputs.name }}"
           NOW=$(date)
           echo $NOW > data/latest_datetime_sample_02.txt
           git add data/latest_datetime_sample_02.txt
