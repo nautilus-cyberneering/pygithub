@@ -18,6 +18,8 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - name: GPG user IDs
         run: |
@@ -33,5 +35,5 @@ jobs:
           NOW=$(date)
           echo $NOW > data/latest_datetime_sample_02.txt
           git add data/latest_datetime_sample_02.txt
-          git commit -S -m "update datetime to "
+          git commit -S -m "update datetime to ${NOW}"
           git push
