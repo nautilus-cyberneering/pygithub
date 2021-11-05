@@ -1,7 +1,5 @@
 ## Sign automatic commits in GitHub Actions
 
-WIP.
-
 I'm working on a project where we use GitHub Actions intensively. One of the challenges we are facing is how we can sign commits when commits are created automatically from a GitHub Action. There is a lot of information about signing commits manually when the developer is creating the commit:
 
 https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits
