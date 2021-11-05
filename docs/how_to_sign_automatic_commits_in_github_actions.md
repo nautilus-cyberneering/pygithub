@@ -72,11 +72,11 @@ The alternative solution could be to use your own PGP Key.
 
 ## Solution 02: using your own PGP Key as a secret
 
-If you do not want to use the GITHUB_TOKEN you ca use your own GPG Key. For this example I'm not going to use the GiPython package becuase it seems it dnoes support commit signing directly. I'm going to use a GitHub Action that imports and sets up a GPG key in your workflow git configuration.
+If you do not want to use the `GITHUB_TOKEN`, you can use your own GPG key. For this example, I'm not using the `GiPython` package because it seems it does not support commit signing directly. I use a GitHub Action that imports and sets up a GPG key in your workflow git configuration.
 
 [sample-02.yml](./../.github/workflows/sample-02.yml)
 
-First at all, you need a PGP key. I did not want to use my personal PGP key becuase it's going to be exposed as a repo secret. That means every mantainer (who can have access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (https://github.com/josecelano-bot) and I gave access to the bot to this repo.
+First at all, you need a PGP key. I did not want to use my personal PGP key because it's going to be exposed as a repo secret. That means every maintainer (who has access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (https://github.com/josecelano-bot), and I gave access to the bot to this repo.
 
 Then, you only need to follow the steps on the [action documentation](https://github.com/marketplace/actions/import-gpg):
 
@@ -87,20 +87,26 @@ gpg --armor --export-secret-key bot@josecelano.com -w0
 
 2. Add the secrets to your repo: PGP secret key and passphrase
 
-If you follow the process your commits will be signed like this:
+If you follow the process, your commits will be signed like this:
 
 ![Signed commit with custom PGP key](images/commit-signed-with-custom-pgp-key.png)
 
-Does it make sense to use a shared PGP key? All mantainers will have access to the key. 
+The funniest thing about this solution is that you can easily check your bot's activity:
 
-There is diffrenet proposal in a GitHub runner issue: https://github.com/actions/runner/issues/667#issuecomment-940441757
+![Jose Celano's bot](images/josecelanos-bot.png)
+
+Does it make sense to use a shared PGP key? All maintainers will have access to the key. 
+
+There is a different proposal in a GitHub runner issue: https://github.com/actions/runner/issues/667#issuecomment-940441757
 
 > The actual feature we should propose is to recognize myname+actions@github.com as a non-human account associated with me, and can be verified by my GPG keys. All I need is to store a private key as actions secret and use it for signing the commits.
 
-If I understand the proposal, that means all automatic commits will be signed with the PGP key of the developer who triggered the workflow, just telling GitHub your PGP secret key and using an specific email for the commit author `josecelano+actions@github.com`. In the end, it's almost the same as creating your own bot account, but with two more advantages:
+If I understand the proposal, that means all automatic commits will be signed with the PGP key of the developer who triggered the workflow, just telling GitHub your PGP secret key and using a specific email for the commit author `josecelano+actions@github.com`. In the end, it's almost the same as creating your own bot account, but with two more advantages:
 
-* You do not have to pay for an extra seat (depending on the GitHub licence you are using).
-* You do not have to share that key with other mantainers.
+* You do not have to pay for an extra seat (depending on the GitHub license you are using).
+* You do not have to share that key with other maintainers.
+
+If you want to use your own bot approach you could create a bot for every repo, and change the PGP key every time a maintainer is removed from the project.
 
 ## Notes
 
