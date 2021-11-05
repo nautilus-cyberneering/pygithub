@@ -1,3 +1,5 @@
+[![Test workflow for sample 01](https://github.com/josecelano/pygithub/actions/workflows/sample-01.yml/badge.svg)](https://github.com/josecelano/pygithub/actions/workflows/sample-01.yml) [![Test workflow for sample 02](https://github.com/josecelano/pygithub/actions/workflows/sample-02.yml/badge.svg)](https://github.com/josecelano/pygithub/actions/workflows/sample-02.yml)
+
 ## Wrapper for PyGithub package
 
 This repo is a sample repo containing some examples about how to sign commits automatically using GitHub.
