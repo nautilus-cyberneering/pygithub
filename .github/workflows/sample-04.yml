@@ -1,0 +1,24 @@
+name: Test workflow for sample 04
+
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+  push:
+    branches: [ main, issue-* ]
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build docker image
+        run: ./bin/build.sh
+
+      - name: Run example
+        run: |
+          docker run --rm \
+            --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            --env INPUT_BRANCH=${{ github.ref }} \
+            pygithub \
+            python 04_sign_commit_with_multiple_files_using_github_api.py

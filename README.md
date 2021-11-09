@@ -21,5 +21,6 @@ Run all examples in `src/main.py`:
 Run a given example:
 ```
 ./bin/run-01.sh
+./bin/run-04.sh
 ./bin/run-XX.sh
 ```
