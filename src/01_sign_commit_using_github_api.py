@@ -10,7 +10,7 @@ from github import Github
 # during the workflow job execution.
 # The example workflow "example-01.yml" uses the GITHUB_TOKEN and auto-commits are verified.
 
-def main(repo_token):
+def main(repo_token, branch):
 
     gh = Github(repo_token)
 
@@ -24,12 +24,17 @@ def main(repo_token):
 
     # Get current file sha
 
-    dir_content = remote_repo.get_contents("data", "main")
+    dir_content = remote_repo.get_contents("data/example-01", branch)
+
+    remote_sha = None
 
     for file in dir_content:
         if (file.path == file_to_update):
             print("File: ", file.path, " sha:", file.sha)
             remote_sha = file.sha
+
+    if remote_sha is None:
+        raise ValueError(f'File not found {file_to_update}')
 
     # Update file
 
@@ -37,7 +42,6 @@ def main(repo_token):
     print("Datetime:", now)
 
     commit_message = f'Example 01: update datetime to {now}'
-    branch = "main"
 
     response = remote_repo.update_file(
         file_to_update, commit_message, str(now), remote_sha, branch)
@@ -49,4 +53,5 @@ def main(repo_token):
 if __name__ == "__main__":
     # https://pygithub.readthedocs.io
     repo_token = os.environ["INPUT_REPO_TOKEN"]
-    main(repo_token)
+    branch = "main"
+    main(repo_token, branch)

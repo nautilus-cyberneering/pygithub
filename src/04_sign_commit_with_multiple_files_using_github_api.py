@@ -39,7 +39,7 @@ def main(repo_token, branch):
     element2 = github.InputGitTreeElement(
         path=file_to_update_02, mode='100644', type='blob', sha=blob2.sha)
 
-    commit_message = f'Example 04: update data to {now}'
+    commit_message = f'Example 04: update datetime to {now}'
 
     branch_sha = remote_repo.get_branch(branch).commit.sha
 
