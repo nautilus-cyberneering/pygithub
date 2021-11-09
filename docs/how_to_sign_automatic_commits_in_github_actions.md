@@ -57,7 +57,7 @@ But the problem with that solution is the commit is not going to be signed. The 
 
 [01_sign_commit_using_github_api.py](./../src/01_sign_commit_using_github_api.py)
 
-> WARNING: if you run the example locally using your own token the commit is not going to be signed. It only works when you use an app token. You can check the [workflow using this sample](./../.github/workflows/sample-01.yml).
+> WARNING: if you run the example locally using your own token the commit is not going to be signed. It only works when you use an app token. You can check the [workflow using this example](./../.github/workflows/example-01.yml).
 
 Drawbacks for this solution:
 
@@ -72,7 +72,7 @@ The alternative solution could be to use your own PGP Key.
 
 If you do not want to use the `GITHUB_TOKEN`, you can use your own GPG key. For this example, I'm not using the `GiPython` package because it seems it does not support commit signing directly. I use a GitHub Action that imports and sets up a GPG key in your workflow git configuration.
 
-[sample-02.yml](./../.github/workflows/sample-02.yml)
+[example-02.yml](./../.github/workflows/example-02.yml)
 
 First at all, you need a PGP key. I did not want to use my personal PGP key because it's going to be exposed as a repo secret. That means every maintainer (who has access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (https://github.com/josecelano-bot), and I gave access to the bot to this repo.
 

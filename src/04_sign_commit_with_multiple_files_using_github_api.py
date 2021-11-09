@@ -8,7 +8,7 @@ from pprint import pprint
 # If you run this example using your personal token the commit is not going to be verified.
 # It only works for commits made using a token generated for a bot/app like the one you have
 # during the workflow job execution.
-# The sample workflow "sample-04.yml" uses the GITHUB_TOKEN and auto-commits are verified.
+# The example workflow "example-04.yml" uses the GITHUB_TOKEN and auto-commits are verified.
 
 def main(repo_token, branch):
 
@@ -19,12 +19,12 @@ def main(repo_token, branch):
     remote_repo = gh.get_repo(repository)
 
     # Update files:
-    #   data/sample-04/latest_datetime_01.txt
-    #   data/sample-04/latest_datetime_02.txt
+    #   data/example-04/latest_datetime_01.txt
+    #   data/example-04/latest_datetime_02.txt
     # with the current date.
 
-    file_to_update_01 = "data/sample-04/latest_datetime_01.txt"
-    file_to_update_02 = "data/sample-04/latest_datetime_02.txt"
+    file_to_update_01 = "data/example-04/latest_datetime_01.txt"
+    file_to_update_02 = "data/example-04/latest_datetime_02.txt"
 
     now = datetime.datetime.now()
 
@@ -39,7 +39,7 @@ def main(repo_token, branch):
     element2 = github.InputGitTreeElement(
         path=file_to_update_02, mode='100644', type='blob', sha=blob2.sha)
 
-    commit_message = f'Update sample-04 data to {now}'
+    commit_message = f'Example 04: update data to {now}'
 
     branch_sha = remote_repo.get_branch(branch).commit.sha
 

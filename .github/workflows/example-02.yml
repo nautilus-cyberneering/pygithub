@@ -1,4 +1,4 @@
-name: Test workflow for sample 02
+name: Test workflow for example 02
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "${{ steps.import-gpg.outputs.email }}"
           git config --global user.name "${{ steps.import-gpg.outputs.name }}"
           NOW=$(date)
-          echo $NOW > data/latest_datetime_sample_02.txt
-          git add data/latest_datetime_sample_02.txt
-          git commit -S -m "update datetime to ${NOW}"
+          echo $NOW > data/example-02/latest_datetime.txt
+          git add data/example-02/latest_datetime.txt
+          git commit -S -m "Example 02: update datetime to ${NOW}"
           git push

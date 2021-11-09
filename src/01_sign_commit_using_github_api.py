@@ -8,7 +8,7 @@ from github import Github
 # If you run this example using your personal token the commit is not going to be verified.
 # It only works for commits made using a token generated for a bot/app like the one you have
 # during the workflow job execution.
-# The sample workflow "sample-01.yml" uses the GITHUB_TOKEN and auto-commits are verified.
+# The example workflow "example-01.yml" uses the GITHUB_TOKEN and auto-commits are verified.
 
 def main(repo_token):
 
@@ -18,9 +18,9 @@ def main(repo_token):
 
     remote_repo = gh.get_repo(repository)
 
-    # Update file data/latest_datetime.txt with the current date.
+    # Update file data/example-01/latest_datetime.txt with the current date.
 
-    file_to_update = "data/latest_datetime.txt"
+    file_to_update = "data/example-01/latest_datetime.txt"
 
     # Get current file sha
 
@@ -36,7 +36,7 @@ def main(repo_token):
     now = datetime.datetime.now()
     print("Datetime:", now)
 
-    commit_message = f'update datetime to {now}'
+    commit_message = f'Example 01: update datetime to {now}'
     branch = "main"
 
     response = remote_repo.update_file(

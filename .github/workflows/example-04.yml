@@ -1,4 +1,4 @@
-name: Test workflow for sample 01
+name: Test workflow for example 04
 
 on:
   schedule:
@@ -19,5 +19,6 @@ jobs:
         run: |
           docker run --rm \
             --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            --env INPUT_BRANCH=main \
             pygithub \
-            python 01_sign_commit_using_github_api.py
+            python 04_sign_commit_with_multiple_files_using_github_api.py
