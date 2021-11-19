@@ -8,6 +8,7 @@ This repo contains some Python examples on using git and GitHub API.
 
 1. [Sign automatic commits in GitHub Actions](./docs/how_to_sign_automatic_commits_in_github_actions.md)
 2. [How to create a single commit with multiple files using GitHub API](./docs/how_to_create_a_single_commit_with_multiple_files_using_github_api.md)
+3. [How to sign commits using the GitPython package](./docs/how_to_sign_commits_using_the_gitpython_package.md)
 
 ## Build and run
 
@@ -28,6 +29,7 @@ Run examples:
 ```shell
 ./bin/run-01.sh
 ./bin/run-04.sh
+./bin/run-05.sh
 ./bin/run-main.sh
 ```
 
