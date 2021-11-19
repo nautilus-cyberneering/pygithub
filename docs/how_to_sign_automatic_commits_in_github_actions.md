@@ -1,8 +1,8 @@
-## Sign automatic commits in GitHub Actions
+# Sign automatic commits in GitHub Actions
 
 I'm working on a project where we use GitHub Actions intensively. One of the challenges we are facing is how we can sign commits when commits are created automatically from a GitHub Action. There is a lot of information about signing commits manually when the developer is creating the commit:
 
-https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits
+<https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits>
 
 but I have not found enough information about signing commits from bots and GitHub Actions. I have only found a couple of official pages from GitHub explaining how the commit signature works when using bots.
 
@@ -22,6 +22,9 @@ One of the things you can do with the API is to create a commit. So what they sa
 
 So we can try to implement a solution using a token generated for a GitHub App.
 
+1. [Solution 01: using the temporary GITHUB_TOKEN generated for each workflow job](#solution-01-using-the-temporary-github_token-generated-for-each-workflow-job)
+2. [Solution 02: using your own PGP Key as a secret](#solution-02-using-your-own-pgp-key-as-a-secret)
+
 ## Solution 01: using the temporary GITHUB_TOKEN generated for each workflow job
 
 What GitHub Apps authorization has to do with GitHub actions in a workflow?
@@ -36,8 +39,9 @@ So basically, you are provided with a kind of GitHub App token that you can use 
 
 You can use that token directly like this:
 
-https://github.com/marketplace/actions/checkout#push-a-commit-using-the-built-in-token
-```
+<https://github.com/marketplace/actions/checkout#push-a-commit-using-the-built-in-token>
+
+```yml
 on: push
 jobs:
   build:
@@ -74,12 +78,13 @@ If you do not want to use the `GITHUB_TOKEN`, you can use your own GPG key. For 
 
 [example-02.yml](./../.github/workflows/example-02.yml)
 
-First at all, you need a PGP key. I did not want to use my personal PGP key because it's going to be exposed as a repo secret. That means every maintainer (who has access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (https://github.com/josecelano-bot), and I gave access to the bot to this repo.
+First at all, you need a PGP key. I did not want to use my personal PGP key because it's going to be exposed as a repo secret. That means every maintainer (who has access to the workflow) could sign a commit using my PGP Key. I have created a new GitHub account for this example (<https://github.com/josecelano-bot>), and I gave access to the bot to this repo.
 
 Then, you only need to follow the steps on the [action documentation](https://github.com/marketplace/actions/import-gpg):
 
 1. Export the Bot's PGP secret key:
-```
+
+```shell
 gpg --armor --export-secret-key bot@josecelano.com -w0
 ```
 
@@ -93,9 +98,9 @@ The funniest thing about this solution is that you can easily check your bot's a
 
 ![Jose Celano's bot](images/josecelanos-bot.png)
 
-Does it make sense to use a shared PGP key? All maintainers will have access to the key. 
+Does it make sense to use a shared PGP key? All maintainers will have access to the key.
 
-There is a different proposal in a GitHub runner issue: https://github.com/actions/runner/issues/667#issuecomment-940441757
+There is a different proposal in a GitHub runner issue: <https://github.com/actions/runner/issues/667#issuecomment-940441757>
 
 > The actual feature we should propose is to recognize myname+actions@github.com as a non-human account associated with me, and can be verified by my GPG keys. All I need is to store a private key as actions secret and use it for signing the commits.
 
@@ -109,8 +114,9 @@ If you want to use your own bot approach you could create a bot for every repo, 
 ## Notes
 
 [GiPython](https://github.com/gitpython-developers/GitPython) does not support commit signing directly:
-* https://github.com/gitpython-developers/GitPython/issues/580
-* https://github.com/gitpython-developers/GitPython/issues/579
+
+* <https://github.com/gitpython-developers/GitPython/issues/580>
+* <https://github.com/gitpython-developers/GitPython/issues/579>
 
 ## Links
 
