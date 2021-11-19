@@ -28,8 +28,8 @@ Run examples:
 
 ```shell
 ./bin/run-01.sh
+./bin/run-03.sh
 ./bin/run-04.sh
-./bin/run-05.sh
 ./bin/run-main.sh
 ```
 
