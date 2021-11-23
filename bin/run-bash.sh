@@ -3,4 +3,5 @@
 docker run --rm -it \
   --env-file .env \
   --volume $(pwd):/app \
-  pygithub bash
+  --entrypoint=/bin/bash \
+  pygithub

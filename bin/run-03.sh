@@ -3,4 +3,4 @@
 docker run --rm -it \
   --env-file .env \
   --volume $(pwd):/app \
-  pygithub python src/03_sign_commit_using_the_gitpython_package.py
+  pygithub src/03_sign_commit_using_the_gitpython_package.py
