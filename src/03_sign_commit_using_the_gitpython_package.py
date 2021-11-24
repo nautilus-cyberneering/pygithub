@@ -60,10 +60,12 @@ def commit_without_signning(temp_dir, repo):
 
 def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
     # The GPG key:
-    # sec   rsa4096/27304EDD6079B81C 2021-11-19 [SC]
+    # pub   rsa4096 2021-11-19 [SC]
     #       88966A5B8C01BD04F3DA440427304EDD6079B81C
-    # uid                 [ultimate] A committer <committer@example.com>
-    # ssb   rsa4096/5B6BDD35BEDFBF6F 2021-11-19 [E]
+    #       Keygrip = 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF
+    # uid           [ultimate] A committer <committer@example.com>
+    # sub   rsa4096 2021-11-19 [E]
+    #       Keygrip = 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9
 
     # Create file
     filename = "README_SIGNED.md"
@@ -92,7 +94,8 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
 
     # TODO: get from console, gnupg package or env var
     signingkey = '27304EDD6079B81C'
-    keygrip = '97D36F5B8F5BECDA8A1923FC00D11C7C438584F9'
+    keygrip = '449972AC9FF11BCABEED8A7AE834C4349CC4DBFF'
+    subkey_keygrip = '97D36F5B8F5BECDA8A1923FC00D11C7C438584F9'
     fingerprint = '88966A5B8C01BD04F3DA440427304EDD6079B81C'
     hex_passphrase = passphrase.encode('utf-8').hex().upper()
 
@@ -160,10 +163,14 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
     # get_passphrase_command = f'gpg-connect-agent \'GET_PASSPHRASE {keygrip} error prompt desc\' /bye'
     # execute_console_command(get_passphrase_command)
 
+    # Get a list of the known keygrips
+    show_key_info_list = f"gpg-connect-agent 'keyinfo --list' /bye"
+    execute_console_command(show_key_info_list)
+
     show_key_info_command = f"gpg-connect-agent 'KEYINFO {keygrip}' /bye"
     execute_console_command(show_key_info_command)
 
-    repo.git.commit('-S', f'--gpg-sign={signingkey}', '-m', '"my commit message 2"',
+    repo.git.commit('-S', f'--gpg-sign={signingkey}', '-m', '"my signed commit"',
                     author='"A committer <committer@example.com>"')
 
     # Print commit info
