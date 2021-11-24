@@ -27,38 +27,9 @@ def execute_console_command(command):
     print(output)
 
 
-def print_git_config_option(option):
-    command = f'git config --get {option}'
-    print(f'Executing command: {command}')
-    output = os.popen(command).read()
-    print(output)
-
-
-def commit_without_signning(temp_dir, repo):
-    # Create file
-    filename = "README.md"
-    file_path = temp_dir + '/' + filename
-    print(f'Creating file: {file_path}')
-    open(file_path, 'w').close()
-
-    # Add the new file to the index
-    print(f'Adding file "{filename}" to the index')
-    index = repo.index
-    index.add([file_path])
-
-    # Commit without signature
-    author = Actor("An author", "author@example.com")
-    committer = Actor("A committer", "committer@example.com")
-    index.commit("my commit message", author=author, committer=committer)
-
-    # Print commit info
-    command = f'cd {temp_dir} && git log'
-    print(f'Executing command: {command}')
-    output = os.popen(command).read()
-    print(output)
-
-
-def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
+def main(gpg_private_key, passphrase):
+    temp_dir = create_temp_dir()
+    repo = git_init(temp_dir)
 
     # Create file
     filename = "README_SIGNED.md"
@@ -77,26 +48,17 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
 
     # TODO: get from console, gnupg package or env var
     signingkey = '27304EDD6079B81C'
+    # Of master key 88966A5B8C01BD04F3DA440427304EDD6079B81C
     keygrip = '449972AC9FF11BCABEED8A7AE834C4349CC4DBFF'
-    subkey_keygrip = '97D36F5B8F5BECDA8A1923FC00D11C7C438584F9'
-    fingerprint = '88966A5B8C01BD04F3DA440427304EDD6079B81C'
     hex_passphrase = passphrase.encode('utf-8').hex().upper()
 
-    # git config --global user.name "A committer"
+    # Set global Git user
     repo.config_writer().set_value("user", "name", "A committer").release()
-    # git config --global user.email "committer@example.com"
     repo.config_writer().set_value("user", "email", "committer@example.com").release()
 
-    gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=False, use_agent=True)
-
     # Import private key
-    result = gpg.import_keys(gpg_private_key, passphrase=passphrase)
-    # print(gpg_private_key, passphrase)
-    pprint.pprint(result)
-
-    # Print gpg keys using Python package
-    keys = gpg.list_keys(True)
-    # pprint.pprint(keys)
+    gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=False, use_agent=True)
+    gpg.import_keys(gpg_private_key, passphrase=passphrase)
 
     # Preset passphrase using gpg-connect-agent:
     preset_passphrase_command = f'gpg-connect-agent \'PRESET_PASSPHRASE {keygrip} -1 {hex_passphrase}\' /bye'
@@ -107,19 +69,6 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
 
     # Print commit info
     execute_console_command(f'cd {temp_dir} && git log --show-signature')
-
-
-def main(gpg_private_key, passphrase):
-    temp_dir = create_temp_dir()
-    repo = git_init(temp_dir)
-
-    print("COMMIT WITHOUT SIGNATURE")
-    print("------------------------")
-    commit_without_signning(temp_dir, repo)
-
-    print("COMMIT WITH SIGNATURE")
-    print("---------------------")
-    signed_commit(temp_dir, repo, gpg_private_key, passphrase)
 
 
 if __name__ == "__main__":
