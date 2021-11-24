@@ -13,7 +13,7 @@ jobs:
       - name: Build docker image
         run: ./bin/build.sh
 
-      - name: Run example
+      - name: Run example 04
         run: |
           docker run --rm \
             --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
