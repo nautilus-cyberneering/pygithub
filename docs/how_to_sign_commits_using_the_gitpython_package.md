@@ -4,6 +4,30 @@
 
 TODO
 
+## Other mini Python examples
+
+Set git congif option:
+
+```python
+# git config --global user.name "A committer"
+repo.config_writer().set_value("user", "name", "A committer").release()
+# git config --global user.email "committer@example.com"
+repo.config_writer().set_value("user", "email", "committer@example.com").release()
+repo.config_writer().set_value("user", "signingkey", signingkey).release()
+repo.config_writer().set_value("commit", "gpgsign", "true").release()
+```
+
+Print gpg keys using `gnupg` Python package:
+
+```python
+import pprint
+import gnupg
+
+gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=True, use_agent=True)
+keys = gpg.list_keys(True)
+pprint.pprint(keys)
+```
+
 ## The GPG Key I'm using for the examples
 
 ```text
@@ -85,6 +109,58 @@ sec   rsa4096 2021-11-19 [SC]
 uid           [ultimate] A committer <committer@example.com>
 ssb   rsa4096 2021-11-19 [E]
       Keygrip = 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9
+```
+
+## Sample `gpg-agent` commands
+
+Show agent config:
+
+```shell
+gpg-agent --gpgconf-list
+```
+
+## Sample `gpg-connect-agent` commands
+
+Preset passphrase using `gpg-preset-passphrase`:
+
+```shell
+echo "$PASSPHRASE" | /usr/lib/gnupg2/gpg-preset-passphrase -v --preset $KEYGRIP
+```
+
+Preset passphrase using `gpg-connect-agent`:
+
+```shell
+gpg-connect-agent "PRESET_PASSPHRASE $KEYGRIP -1 $HEX_PASSPHRASE" /bye
+```
+
+How to preset passphrase to avoid GPG popup asking you for it:
+
+- <https://www.gnupg.org/documentation/manuals/gnupg/Agent-PRESET_005fPASSPHRASE.html#Agent-PRESET_005fPASSPHRASE>
+- <https://github.com/crazy-max/ghaction-import-gpg/blob/60f6f3e9a98263cc2c51ebe1f9babe82ded3f0ba/src/gpg.ts#L170-L174>
+
+Prompt user for the passphrase:
+
+```shell
+gpg-connect-agent "GET_PASSPHRASE $KEYGRIP $ERROR $PROMPT $DESC" /bye
+```
+
+More info about [GET_PASSPHRASE command](https://www.gnupg.org/documentation/manuals/gnupg/Agent-GET_005fPASSPHRASE.html#Agent-GET_005fPASSPHRASE).
+
+Get a list of the known keygrips:
+
+```shell
+gpg-connect-agent 'keyinfo --list' /bye
+S KEYINFO 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF D - - 1 P - - -
+S KEYINFO 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9 D - - - P - - -
+OK
+```
+
+Show info about a key:
+
+```shell
+gpg-connect-agent "KEYINFO $KEYGRIP" /bye
+S KEYINFO 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF D - - 1 P - - -
+OK
 ```
 
 ## Notes

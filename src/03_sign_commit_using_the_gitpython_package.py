@@ -86,16 +86,8 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
     repo.config_writer().set_value("user", "name", "A committer").release()
     # git config --global user.email "committer@example.com"
     repo.config_writer().set_value("user", "email", "committer@example.com").release()
-    repo.config_writer().set_value("user", "signingkey", signingkey).release()
-    repo.config_writer().set_value("commit", "gpgsign", "true").release()
 
-    # Debug: git Python package does not write global options on the root git config file
-    # print_git_config_option('user.name')
-    # print_git_config_option('user.email')
-    # print_git_config_option('user.signingkey')
-    # print_git_config_option('commit.gpgsign')
-
-    gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=True, use_agent=True)
+    gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=False, use_agent=True)
 
     # Import private key
     result = gpg.import_keys(gpg_private_key, passphrase=passphrase)
@@ -103,55 +95,12 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
     pprint.pprint(result)
 
     # Print gpg keys using Python package
-    # keys = gpg.list_keys()
-    # pprint.pprint(keys)
     keys = gpg.list_keys(True)
     # pprint.pprint(keys)
 
-    # Print gpg keys using console command
-    execute_console_command('gpg --list-secret-keys --keyid-format=long')
-    # Print GPG agent conf
-    execute_console_command('cat /root/.gnupg/gpg-agent.conf')
-    # Print global git config. With docker we use root user and it does not have a .gitconfig file
-    execute_console_command('cat ~/.gitconfig')
-
-    # Reload PGP agent
-    # reload_pgp_agent_command = 'gpg-connect-agent reloadagent /bye'
-    # execute_console_command(reload_pgp_agent_command)
-    #execute_console_command('gpg-agent --daemon --allow-preset-passphrase')
-
-    #reload_agent_command = f'gpg-connect-agent \'RELOADAGENT\' /bye'
-    # execute_console_command(reload_agent_command)
-
-    gpg_agente_config = 'gpg-agent --gpgconf-list'
-    execute_console_command(gpg_agente_config)
-
-    # Preset passphrase using gpg-preset-passphrase:
-    # https://www.gnupg.org/documentation/manuals/gnupg/Invoking-gpg_002dpreset_002dpassphrase.html#Invoking-gpg_002dpreset_002dpassphrase
-    # This command makes git not prompt for passphrase for GPG key. We preset the PGP agent with the passphrase
-    # preset_passphrase_command = f'echo \'{passphrase}\' | /usr/lib/gnupg2/gpg-preset-passphrase -v --preset {keygrip}'
-    # execute_console_command(preset_passphrase_command)
-
     # Preset passphrase using gpg-connect-agent:
-    # https://www.gnupg.org/documentation/manuals/gnupg/Agent-PRESET_005fPASSPHRASE.html#Agent-PRESET_005fPASSPHRASE
-    # https://github.com/crazy-max/ghaction-import-gpg/blob/60f6f3e9a98263cc2c51ebe1f9babe82ded3f0ba/src/gpg.ts#L170-L174
     preset_passphrase_command = f'gpg-connect-agent \'PRESET_PASSPHRASE {keygrip} -1 {hex_passphrase}\' /bye'
     execute_console_command(preset_passphrase_command)
-
-    # If we want ot ask the user for the passphrase (popup)
-    # https://www.gnupg.org/documentation/manuals/gnupg/Agent-GET_005fPASSPHRASE.html#Agent-GET_005fPASSPHRASE
-    # error = 'error'
-    # prompt = 'prompt'
-    # desc = 'desc'
-    # get_passphrase_command = f'gpg-connect-agent \'GET_PASSPHRASE {keygrip} error prompt desc\' /bye'
-    # execute_console_command(get_passphrase_command)
-
-    # Get a list of the known keygrips
-    show_key_info_list = f"gpg-connect-agent 'keyinfo --list' /bye"
-    execute_console_command(show_key_info_list)
-
-    show_key_info_command = f"gpg-connect-agent 'KEYINFO {keygrip}' /bye"
-    execute_console_command(show_key_info_command)
 
     repo.git.commit('-S', f'--gpg-sign={signingkey}', '-m', '"my signed commit"',
                     author='"A committer <committer@example.com>"')
