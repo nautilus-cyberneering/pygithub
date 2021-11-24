@@ -37,6 +37,7 @@ About using subkeys:
 GPG:
 
 - [GPG Cheat Sheet](https://gock.net/blog/2020/gpg-cheat-sheet/)
+- [GnuPG fingerprints, SSH fingerprints, and Keygrips](https://blog.djoproject.net/2020/05/03/main-differences-between-a-gnupg-fingerprint-a-ssh-fingerprint-and-a-keygrip/)
 
 GPG and GitHub:
 
