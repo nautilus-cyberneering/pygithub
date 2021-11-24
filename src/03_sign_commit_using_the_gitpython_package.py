@@ -59,13 +59,6 @@ def commit_without_signning(temp_dir, repo):
 
 
 def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
-    # The GPG key:
-    # pub   rsa4096 2021-11-19 [SC]
-    #       88966A5B8C01BD04F3DA440427304EDD6079B81C
-    #       Keygrip = 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF
-    # uid           [ultimate] A committer <committer@example.com>
-    # sub   rsa4096 2021-11-19 [E]
-    #       Keygrip = 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9
 
     # Create file
     filename = "README_SIGNED.md"
@@ -77,16 +70,6 @@ def signed_commit(temp_dir, repo, gpg_private_key, passphrase):
     print(f'Adding file "{filename}" to the index')
     index = repo.index
     index.add([file_path])
-
-    # gpg commands:
-    # List keys:          gpg --list-secret-keys --keyid-format=long
-    # Show public key:    gpg --armor --export 27304EDD6079B81C
-    # Export private key: gpg --output private_key.pgp --armor --export-secret-key 27304EDD6079B81C
-    # Export private key:
-    # (for env var)       gpg -a --export-secret-keys 88966A5B8C01BD04F3DA440427304EDD6079B81C | cat -e | sed 's/\$/\\n/g'
-    # Import pgp key:     echo -e $GPG_PRIVATE_KEY | gpg --import
-    # Get keygrips:       gpg --batch --with-colons --with-keygrip --list-secret-keys
-    #                     gpg --with-keygrip --list-secret-keys
 
     # Needed for commit with signature:
     # https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282474086

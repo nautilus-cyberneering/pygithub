@@ -4,6 +4,89 @@
 
 TODO
 
+## The GPG Key I'm using for the examples
+
+```text
+pub   rsa4096 2021-11-19 [SC]
+      88966A5B8C01BD04F3DA440427304EDD6079B81C
+      Keygrip = 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF
+uid           [ultimate] A committer <committer@example.com>
+sub   rsa4096 2021-11-19 [E]
+      Keygrip = 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9
+```
+
+## Sample GPG commands
+
+List your secret keys:
+
+```shell
+gpg --list-secret-keys --keyid-format=long
+/home/josecelano/.gnupg/pubring.kbx
+-----------------------------------
+sec   rsa4096/27304EDD6079B81C 2021-11-19 [SC]
+      88966A5B8C01BD04F3DA440427304EDD6079B81C
+uid                 [ultimate] A committer <committer@example.com>
+ssb   rsa4096/5B6BDD35BEDFBF6F 2021-11-19 [E]
+```
+
+Show public key:
+
+```shell
+gpg --armor --export 27304EDD6079B81C
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBGGX3iEBEACqKHI35iK8y5lODg00/Uck4PDxxACldsT6OR01dmrDV2U0JYXw
+...
+```
+
+Export private key:
+
+```shell
+gpg --output private_key.pgp --armor --export-secret-key 27304EDD6079B81C
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+...
+-----END PGP PRIVATE KEY BLOCK-----
+```
+
+Export private key in a single line (for `.env` file):
+
+```shell
+gpg -a --export-secret-keys 88966A5B8C01BD04F3DA440427304EDD6079B81C | cat -e | sed 's/\$/\\n/g'
+```
+
+Then you have to remove the real line breaks character. The final line in the docker `.env` file will look like this:
+
+```text
+GPG_PRIVATE_KEY=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlXX\n-----END PGP PRIVATE KEY BLOCK-----\n
+```
+
+Import GPG key from env var:
+
+```shell
+echo -e $GPG_PRIVATE_KEY | gpg --import
+```
+
+Show keys using keygrip format:
+
+```shell
+gpg --batch --with-colons --with-keygrip --list-secret-keys
+sec:u:4096:1:27304EDD6079B81C:1637342753:::u:::scESC:::+:::23::0:
+fpr:::::::::88966A5B8C01BD04F3DA440427304EDD6079B81C:
+grp:::::::::449972AC9FF11BCABEED8A7AE834C4349CC4DBFF:
+uid:u::::1637342753::B3B0B2247600E80BAB9D4802D5CF0AFC477DE016::A committer <committer@example.com>::::::::::0:
+ssb:u:4096:1:5B6BDD35BEDFBF6F:1637342753::::::e:::+:::23:
+fpr:::::::::B1D4A2483D1D2A02416BE0775B6BDD35BEDFBF6F:
+grp:::::::::97D36F5B8F5BECDA8A1923FC00D11C7C438584F9:
+
+gpg --with-keygrip --list-secret-keys
+sec   rsa4096 2021-11-19 [SC]
+      88966A5B8C01BD04F3DA440427304EDD6079B81C
+      Keygrip = 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF
+uid           [ultimate] A committer <committer@example.com>
+ssb   rsa4096 2021-11-19 [E]
+      Keygrip = 97D36F5B8F5BECDA8A1923FC00D11C7C438584F9
+```
+
 ## Notes
 
 [GiPython](https://github.com/gitpython-developers/GitPython) does not support commit signing directly:
