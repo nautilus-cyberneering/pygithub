@@ -1,3 +1,4 @@
+import datetime
 import os
 import pprint
 import random
@@ -130,23 +131,11 @@ def set_git_glogal_user_config(repo):
     repo.config_writer().set_value("user", "email", "committer@example.com").release()
 
 
-def create_signed_commit(temp_dir, signingkey):
-    # Initialize the Git repo
-    repo = git_init(temp_dir)
-
-    # Git config
-    set_git_glogal_user_config(repo)
-
-    # Create new file to commit
-    filename = "README_SIGNED.md"
-    file_path = temp_dir + '/' + filename
-    print(f'Creating file: {file_path}')
-    open(file_path, 'w').close()
-
+def create_signed_commit(repo, filename, commit_message, signingkey):
     # Add the new file to the index
     print(f'Adding file "{filename}" to the index')
     index = repo.index
-    index.add([file_path])
+    index.add([filename])
 
     # Write index. Needed for commit with signature:
     # https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282474086
@@ -154,32 +143,53 @@ def create_signed_commit(temp_dir, signingkey):
 
     # Signed commit
     repo.git.commit(
-        '-S', f'--gpg-sign={signingkey}', '-m', '"my signed commit"')
+        '-S', f'--gpg-sign={signingkey}', '-m', f'{commit_message}')
 
 
 def print_commit_info(temp_dir):
     execute_console_command(f'cd {temp_dir} && git log --show-signature', True)
 
 
-def main(temp_dir, gpg_private_key, passphrase):
+def main(gpg_private_key, passphrase, repo_dir):
+
+    repo = Repo(repo_dir)
+
+    # Create new file to commit
+    file_repo_path = "data/example-02/latest_datetime.txt"
+    file_absolute_path = repo_dir + '/' + file_repo_path
+    print(f'Creating file: {file_absolute_path}')
+    os.makedirs(os.path.dirname(file_absolute_path))
+    now = datetime.datetime.now()
+    f = open(file_absolute_path, 'w')
+    f.write("{now}")
+
+    commit_message = f'Example 03: update datetime to {now}'
+
+    # Git config
+    set_git_glogal_user_config(repo)
 
     keygrip, signingkey = import_gpg_private_key(gpg_private_key, passphrase)
-
     preset_passphrase(keygrip, passphrase)
 
-    create_signed_commit(temp_dir, signingkey)
+    create_signed_commit(repo, file_repo_path, commit_message, signingkey)
 
-    print_commit_info(temp_dir)
+    print_commit_info(repo_dir)
 
 
 if __name__ == "__main__":
     # https://gitpython.readthedocs.io/
 
     # Get environment variables
-    gpg_private_key = os.getenv('GPG_PRIVATE_KEY').replace(r'\n', '\n')
-    passphrase = os.environ.get('PASSPHRASE')
+    gpg_private_key = os.getenv('INPUT_GPG_PRIVATE_KEY').replace(r'\n', '\n')
+    passphrase = os.environ.get('INPUT_PASSPHRASE')
+    mode = os.environ.get('INPUT_MODE')
+    repo_dir = os.environ.get('INPUT_REPO_DIR')
 
-    # Create temp dir for the example
-    temp_dir = create_temp_dir()
+    if (mode == 'test'):
+        # Create temp dir for the example
+        repo_dir = create_temp_dir()
 
-    main(temp_dir, gpg_private_key, passphrase)
+        # Initialize the Git repo
+        repo = git_init(repo_dir)
+
+    main(gpg_private_key, passphrase, repo_dir)
