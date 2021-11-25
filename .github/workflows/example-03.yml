@@ -10,33 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Import GPG key
-        id: import-gpg
-        uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-
-      - name: GPG user IDs
-        run: |
-          echo "fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}"
-          echo "keyid:       ${{ steps.import-gpg.outputs.keyid }}"
-          echo "name:        ${{ steps.import-gpg.outputs.name }}"
-          echo "email:       ${{ steps.import-gpg.outputs.email }}"
-
       - name: Build docker image
         run: ./bin/build.sh
 
       - name: Run example 03
         run: |
           docker run --rm \
-            --volume $(pwd):/app \
+            --env GPG_PRIVATE_KEY="${{ secrets.GPG_PRIVATE_KEY }}" \
+            --env PASSPHRASE="${{ secrets.PASSPHRASE }}" \
+            --env MODE="workflow" \
+            --env REPO_DIR="/app" \
+            --volume "$(pwd):/app" \
             pygithub src/03_sign_commit_using_the_gitpython_package.py
-          git push
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.PASSPHRASE }}
-          MODE: "workflow"
-          REPO_DIR: "${{ github.workspace }}"

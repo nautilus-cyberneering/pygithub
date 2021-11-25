@@ -227,10 +227,10 @@ if __name__ == "__main__":
     # https://gitpython.readthedocs.io/
 
     # Get environment variables
-    gpg_private_key = os.getenv('INPUT_GPG_PRIVATE_KEY').replace(r'\n', '\n')
-    passphrase = os.environ.get('INPUT_PASSPHRASE')
-    mode = os.environ.get('INPUT_MODE')
-    repo_dir = os.environ.get('INPUT_REPO_DIR')
+    gpg_private_key = os.getenv('GPG_PRIVATE_KEY').replace(r'\n', '\n')
+    passphrase = os.environ.get('PASSPHRASE')
+    mode = os.environ.get('MODE')
+    repo_dir = os.environ.get('REPO_DIR')
 
     if (mode == 'test'):
         # Create temp dir for the example
