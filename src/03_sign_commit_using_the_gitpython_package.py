@@ -200,10 +200,10 @@ def main(gpg_private_key, passphrase, repo_dir):
     repo = Repo(repo_dir)
 
     # Create new file to commit
-    file_repo_path = "data/example-02/latest_datetime.txt"
+    file_repo_path = "data/example-03/latest_datetime.txt"
     file_absolute_path = repo_dir + '/' + file_repo_path
     print(f'Creating file: {file_absolute_path}')
-    os.makedirs(os.path.dirname(file_absolute_path))
+    os.makedirs(os.path.dirname(file_absolute_path), exist_ok=True)
     now = datetime.datetime.now()
     f = open(file_absolute_path, 'w')
     f.write("{now}")
