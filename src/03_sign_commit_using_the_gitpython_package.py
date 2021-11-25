@@ -25,6 +25,58 @@ def execute_console_command(command, show_ouput=False):
     output = os.popen(command).read()
     if (show_ouput):
         print(output)
+    return output
+
+
+def get_keygrip_by(fingerprint):
+    """
+    This function parses the keygrip of a given GPG kye using the gpg console command and parsing the output.
+
+    Sample output for the command:
+    sec:-:4096:1:27304EDD6079B81C:1637342753:::-:::scESC:::+:::23::0:
+    fpr:::::::::88966A5B8C01BD04F3DA440427304EDD6079B81C:
+    grp:::::::::449972AC9FF11BCABEED8A7AE834C4349CC4DBFF:
+    uid:-::::1637342753::B3B0B2247600E80BAB9D4802D5CF0AFC477DE016::A committer <committer@example.com>::::::::::0:
+    ssb:-:4096:1:5B6BDD35BEDFBF6F:1637342753::::::e:::+:::23:
+    fpr:::::::::B1D4A2483D1D2A02416BE0775B6BDD35BEDFBF6F:
+    grp:::::::::97D36F5B8F5BECDA8A1923FC00D11C7C438584F9:
+
+    In that example the keygrip (grp) of the key 88966A5B8C01BD04F3DA440427304EDD6079B81C is 449972AC9FF11BCABEED8A7AE834C4349CC4DBFF
+
+    Specification for the format: https://github.com/CSNW/gnupg/blob/master/doc/DETAILS
+    """
+
+    output = execute_console_command(
+        f'gpg --batch --with-colons --with-keygrip --list-secret-keys {fingerprint}', False)
+
+    records = output.split("\n")
+
+    current_fingerprint = ''
+
+    for record in records:
+        if record.startswith('fpr'):
+            fields = record.split(':')
+            current_fingerprint = fields[9]
+        if record.startswith('grp'):
+            fields = record.split(':')
+            keygrip = fields[9]
+            if (current_fingerprint == fingerprint):
+                return keygrip
+
+    return None
+
+
+def get_short_key_id_from_fingerprint(fingerprint):
+    """
+    fingerprint = 88966A5B8C01BD04F3DA440427304EDD6079B81C
+
+    Fingerprint: 8896 6A5B 8C01 BD04  F3DA 4404 2730 4EDD 6079 B81C
+    Long key ID:                                2730 4EDD 6079 B81C
+    Short key ID:                                         6079 B81C
+
+    Returns: 6079B81C
+    """
+    return fingerprint[24:]
 
 
 def import_gpg_private_key(gpg_private_key, passphrase):
@@ -32,7 +84,19 @@ def import_gpg_private_key(gpg_private_key, passphrase):
     Import PGP key into the the local keyring
     """
     gpg = gnupg.GPG(gnupghome='/root/.gnupg', verbose=False, use_agent=True)
-    gpg.import_keys(gpg_private_key, passphrase=passphrase)
+
+    import_result = gpg.import_keys(gpg_private_key, passphrase=passphrase)
+    fingerprint = import_result.fingerprints[0]
+
+    keygrip = get_keygrip_by(fingerprint)
+
+    short_key_id = get_short_key_id_from_fingerprint(fingerprint)
+
+    # print(f'Fingerprint: {fingerprint}')
+    # print(f'Short key ID: {short_key_id}')
+    # print(f'Keygrip: {keygrip}')
+
+    return keygrip, short_key_id
 
 
 def preset_passphrase(keygrip, passphrase):
@@ -66,11 +130,6 @@ def set_git_glogal_user_config(repo):
     repo.config_writer().set_value("user", "email", "committer@example.com").release()
 
 
-def set_gpg_configuration(gpg_private_key, passphrase, keygrip):
-    import_gpg_private_key(gpg_private_key, passphrase)
-    preset_passphrase(keygrip, passphrase)
-
-
 def create_signed_commit(temp_dir, signingkey):
     # Initialize the Git repo
     repo = git_init(temp_dir)
@@ -102,9 +161,11 @@ def print_commit_info(temp_dir):
     execute_console_command(f'cd {temp_dir} && git log --show-signature', True)
 
 
-def main(temp_dir, gpg_private_key, passphrase, signingkey, keygrip):
+def main(temp_dir, gpg_private_key, passphrase):
 
-    set_gpg_configuration(gpg_private_key, passphrase, keygrip)
+    keygrip, signingkey = import_gpg_private_key(gpg_private_key, passphrase)
+
+    preset_passphrase(keygrip, passphrase)
 
     create_signed_commit(temp_dir, signingkey)
 
@@ -118,15 +179,7 @@ if __name__ == "__main__":
     gpg_private_key = os.getenv('GPG_PRIVATE_KEY').replace(r'\n', '\n')
     passphrase = os.environ.get('PASSPHRASE')
 
-    # TODO: get signingkey and keygrip from private key
-
-    signingkey = '27304EDD6079B81C'
-
-    # Of previous signingkey [master] key 88966A5B8C01BD04F3DA440427304EDD6079B81C
-    # It has to be the keygrip of the key you are using to sign commits.
-    keygrip = '449972AC9FF11BCABEED8A7AE834C4349CC4DBFF'
-
     # Create temp dir for the example
     temp_dir = create_temp_dir()
 
-    main(temp_dir, gpg_private_key, passphrase, signingkey, keygrip)
+    main(temp_dir, gpg_private_key, passphrase)
