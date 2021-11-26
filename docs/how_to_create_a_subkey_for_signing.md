@@ -103,7 +103,7 @@ sub   rsa4096 2021-11-26 [S]
       Keygrip = 00CB9308AE0B6DE018C5ADBAB29BA7899D6062BE
 ```
 
-THen, you can replace your git config:
+Then, you can replace your git config:
 
 ```text
 [user]
@@ -111,6 +111,8 @@ THen, you can replace your git config:
         email = your@email.com
         signingkey = B29BA7899D6062BE
 ```
+
+You need to upload agan the public key to GitHub in order to import also the subkey, otherwise you new commits using the the subkey will be shown as unverified.
 
 TODO: then you should remove all the capabilities from the primary key expcet for "Certify" ([C]).
 
