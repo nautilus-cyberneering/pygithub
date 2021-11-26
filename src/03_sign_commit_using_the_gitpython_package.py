@@ -227,7 +227,7 @@ if __name__ == "__main__":
     # https://gitpython.readthedocs.io/
 
     # Get environment variables
-    gpg_private_key = os.getenv('GPG_PRIVATE_KEY').replace(r'\n', '\n')
+    gpg_private_key = os.getenv('GPG_PRIVATE_KEY').replace(r'\n', '\n') # Replace \n character in docker env var with real line breaks.
     passphrase = os.environ.get('PASSPHRASE')
     mode = os.environ.get('MODE')
     repo_dir = os.environ.get('REPO_DIR')
