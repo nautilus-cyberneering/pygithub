@@ -19,7 +19,7 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 ENV GPG_TTY /dev/console
 COPY ./gpg-agent.conf /root/.gnupg/
-COPY ./src /app
+COPY ./src /app/src
 RUN rm -rf /app/test
-CMD ["/app/src/main.py"]
+CMD ["src/main.py"]
 ENTRYPOINT ["python"]
