@@ -2,7 +2,7 @@
 
 > [GitPython](https://github.com/gitpython-developers/GitPython) is a python library used to interact with git repositories, high-level like git-porcelain, or low-level like git-plumbing.
 
-GitPython does not allow you to sign commits with its `git-porcelain` method. The way you can committ with GitPython is:
+GitPython does not allow you to sign commits with its `git-porcelain` method. The way you can commit with GitPython is:
 
 ```python
 repo = Repo(repo_dir)
@@ -32,19 +32,19 @@ index.write()
 repo.git.commit(arg, ...)
 ```
 
-I do not not exactly why you need to `write` your changes but it something the git commit wrapper does:
+I do not know exactly why you need to `write` your changes but it is something the git commit wrapper does:
 
 <https://github.com/gitpython-developers/GitPython/blob/88732b694068704cb151e0c4256a8e8d1adaff38/git/index/base.py#L938-L957>
 
-And it's something [Sebastian Thiel](https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282474086) said it was needed.
+And it's something [Sebastian Thiel](https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282474086) said it is needed.
 
-So if you want to sign the commit you only have to specify the signing key. The GitPython package relies on Git configuration and Git relies on GPG configuration. What is happending under the hood is:
+So if you want to sign the commit, you only have to specify the signing key. The GitPython package relies on Git configuration, and Git relies on GPG configuration. What is happening under the hood is:
 
 1. GitPython is going to call the git commit command using a [git binary wrapper](https://github.com/gitpython-developers/GitPython/blob/254305c935893d7578b112acfa814a07d398ae28/git/cmd.py#L171).
 2. Git is going to call GPG command to sign the commit.
 3. GPG is going to prompt you with the passphrase of the key.
 
-As long as the GPG and Git configuration are OK, GitPython will sign the commit correctly. The [example 03](../03_sign_commit_using_the_gitpython_package) in this repo creates a new signed commit, but before signing, it also sets up the GPG and Git configuration needed. I'm not going to explain how you can create a GPG key and sign commits manually becuase you can follow other tutorials like:
+As long as the GPG and Git configuration are OK, GitPython will sign the commit correctly. The [example 03](../03_sign_commit_using_the_gitpython_package) in this repo creates a newly signed commit, but before signing, it also sets up the GPG and Git configuration needed. In case you want to know how you can sign commits manually, you can follow other tutorials like:
 
 - [Git Documentation - Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
 - [GitHub Documentation - Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
@@ -55,7 +55,7 @@ I'm going to explain only how to do it automatically using Python. There are som
 2. Preset the passphrase
 3. Set Git global user
 
-After those steps you can call the GitPython commit method with the signing key ID you want to use.
+After those steps, you can call the GitPython commit method with the signing key ID you want to use.
 
 ## Import a GPG key using Python
 
@@ -101,7 +101,7 @@ import_result = gpg.import_keys(gpg_private_key, passphrase=passphrase)
 fingerprint = import_result.fingerprints[0]
 ```
 
-The code it's very simple. For this example I'm passing both the private key and passphrase as environment variables. I'm using docker for the example and docker `.env` file for passing env vars. But since docker does not allow to use multi-line string values for variables, I had to store the privete key as a one-line string and then convert it back to the standard multi-line version. That means the `gpg_private_key` variable contains something like:
+The code is very simple. For this example, I'm passing both the private key and passphrase as environment variables. I'm using docker for the example and docker `.env` file for passing env vars. But since docker does not allow to use multi-line string values for variables, I had to store the private key as a one-line string and then convert it back to the standard multi-line version. That means the `gpg_private_key` variable contains something like:
 
 ```text
 GPG_PRIVATE_KEY=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nl****************************\n-----END PGP PRIVATE KEY BLOCK-----\n
@@ -109,15 +109,15 @@ GPG_PRIVATE_KEY=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nl**********************
 
 If you run the example using docker.
 
-You also have to provide the `passphrase` which will be use to encript the private key. The method returns the finrgerprint of the imported keys and the number of keys imported. In the example `import_result.fingerprints` contains this array:
+You also have to provide the `passphrase` which will be used to encrypt the private key. The method returns the fingerprint of the imported keys and the number of keys imported. The variable `import_result.fingerprints` contains this array:
 
 ```text
 ['88966A5B8C01BD04F3DA440427304EDD6079B81C', '88966A5B8C01BD04F3DA440427304EDD6079B81C']
 ```
 
-I do not know why the primary key ID is duplicated. Maybe it's a bug an it should return the fingerprint of the subkey (`97D36F5B8F5BECDA8A1923FC00D11C7C438584F9`). Anyway, for this exmaple I'm going to use the primary key which is not a good practice, althouth Git and GitHub tutorials also use it. Please read the links below to know why it is not considered a good practice.
+I do not know why the primary key ID is duplicated. Maybe it's a bug, and it should return the fingerprint of the subkey (`97D36F5B8F5BECDA8A1923FC00D11C7C438584F9`). Anyway, for this example, I'm going to use the primary key, which is not a good practice, although Git and GitHub tutorials also use it. Please read the links below to know why it is not considered a good practice.
 
-At this point, we have the key imported in our keyring but GPG it's going to ask us for the passphrase every time we sign something. The next section explain why you can avoid that.
+At this point, we have the key imported in our keyring but GPG it's going to ask us for the passphrase every time we sign something. The next section explains why you can avoid that.
 
 ## How to preset the GPG key passphrase
 
@@ -145,13 +145,13 @@ fpr:::::::::B1D4A2483D1D2A02416BE0775B6BDD35BEDFBF6F:
 grp:::::::::97D36F5B8F5BECDA8A1923FC00D11C7C438584F9:
 ```
 
-Keygrips are stores on `grp:` records in a fix field position.
+Keygrips are stored on `grp:` records in a fixed field position.
 
-Finally the GPG cofiguration is completed. We only need to tell Git who is the user who is committing.
+Finally, the GPG configuration is completed. We only need to tell Git who is the user committing.
 
 ## How to config Git's global user
 
-If we do not set git user's configuration we get an error like this:
+If we do not set the git user's configuration we get an error like this:
 
 ```text
 stderr: 'Committer identity unknown
@@ -176,11 +176,11 @@ repo.config_writer().set_value("user", "name", "A committer").release()
 repo.config_writer().set_value("user", "email", "committer@example.com").release()
 ```
 
-We need to use the same author name and email that we have on the GPG key. Althougth the `gnupg` has some methods to get that information, I did it parsing again the output of the same command I used to get the keygrip of the key.
+We need to use the same author name and email that we have on the GPG key. Although the `gnupg` has some methods to get that information, I did it by parsing the output of the same gpg command again.
 
 ## Future improvements
 
-Te action shows some warnings:
+The action shows some warnings:
 
 ```text
 gpg: WARNING: unsafe permissions on homedir '/root/.gnupg'
@@ -200,9 +200,9 @@ By the way, the GitHub Action I'm using in the workflows to import GPG keys also
 
 ## Acknowledges
 
-Thanks to all the contributors all the [Import GPG GitHub Action](https://github.com/marketplace/actions/import-gpg). It would have taken me much more time to find the solution whithout following their Typescript solution.
+Thanks to all the contributors of the [Import GPG GitHub Action](https://github.com/marketplace/actions/import-gpg). It would have taken me much more time to find the solution whithout following their Typescript solution.
 
-And also to [Sebastian Thiel](https://github.com/Byron) who is one of the maintainer of the [GitPython](https://github.com/gitpython-developers/GitPython) package and who [pointed me and other people to the right solution](https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282473867).
+And also to [Sebastian Thiel](https://github.com/Byron) who is one of the maintainers of the [GitPython](https://github.com/gitpython-developers/GitPython) package and who [pointed me and others to the right solution](https://github.com/gitpython-developers/GitPython/issues/580#issuecomment-282473867).
 
 ## Other mini Python examples
 

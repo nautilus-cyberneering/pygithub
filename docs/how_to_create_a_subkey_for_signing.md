@@ -7,7 +7,7 @@ If you want to sign commits and you do not know how to do it, you will probably 
 - [Git Documentation - Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
 - [GitHub Documentation - Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
 
-In those documents, they promote the use of the master or primary key. Or at least if what they use. They probably do not want to overwhelm the reader with a lot of GPG technical stuff.
+In those documents, they promote the use of the master or primary key. Or at least, it's what they use. They probably do not want to overwhelm the reader with a lot of GPG technical stuff.
 
 If you list one of your GPG keys you will see something like:
 
@@ -31,7 +31,7 @@ The meaning for the letters inside brackets are the [GPG key capabilities](https
 | E   | Encrypt |
 | A   | Authentication |
 
-If you want to create a signing key you can follow Debian's post. In my case for the key I'm using in all the examples, this was the output:
+If you want to create a signing key, you can follow [Debian's post](https://wiki.debian.org/Subkeys). In my case for the key I'm using in all the examples, this was the output:
 
 ```text
 gpg --edit-key 88966A5B8C01BD04F3DA440427304EDD6079B81C
@@ -112,9 +112,9 @@ Then, you can replace your git config:
         signingkey = B29BA7899D6062BE
 ```
 
-You need to upload agan the public key to GitHub in order to import also the subkey, otherwise you new commits using the the subkey will be shown as unverified.
+You need to upload again the public key to GitHub to import also the subkey, otherwise you new commits using the subkey will be shown as unverified.
 
-TODO: then you should remove all the capabilities from the primary key expcet for "Certify" ([C]).
+TODO: you should remove all the capabilities from the primary key except for "Certify" ([C]).
 
 ## Links
 

@@ -85,7 +85,7 @@ blob1 = remote_repo.create_git_blob(file_to_update_01_content, "utf-8")
 
 We are using a [Python package](https://github.com/PyGithub/PyGithub) which is a wrapper for the GitHub REST API.
 
-The only way to get the data is by using its SHA and we do not have the filename store anywhere yet. The way git stores the filename is by using another object in the database: the `tree`. The simplest `tree` object only contains a reference to one `blob` object. The `tree` is like a directory with the list of files where the contents of the files are the `blob` objects. We need to create a dir (`tree`) also for only one file because Git will add the file metadata there. The same object is used for one an multiple files. The `tree` can also contains another `tree`.
+The only way to get the data is by using its SHA and we do not have the filename store anywhere yet. The way git stores the filename is by using another object in the database: the `tree`. The simplest `tree` object only contains a reference to one `blob` object. The `tree` is like a directory with the list of files where the contents of the files are the `blob` objects. We need to create a dir (`tree`) also for only one file because Git will add the file metadata there. The same object is used for one an multiple files. The `tree` can also contain another `tree`.
 
 In order to create the `tree`, we need to take the state of the staging area. You first have to set up an index by staging some files with these commands:
 
