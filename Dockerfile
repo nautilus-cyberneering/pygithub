@@ -17,6 +17,9 @@ FROM python:3.9
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-COPY ./src /app
+ENV GPG_TTY /dev/console
+COPY ./gpg-agent.conf /root/.gnupg/
+COPY ./src /app/src
 RUN rm -rf /app/test
-CMD ["python", "/app/src/main.py"]
+CMD ["src/main.py"]
+ENTRYPOINT ["python"]

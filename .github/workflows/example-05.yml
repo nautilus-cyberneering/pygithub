@@ -1,4 +1,4 @@
-name: Test workflow for example 01
+name: Test workflow for example 05
 
 on:
   push:
@@ -13,8 +13,8 @@ jobs:
       - name: Build docker image
         run: ./bin/build.sh
 
-      - name: Run example
+      - name: Run example 05
         run: |
           docker run --rm \
-            --env INPUT_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-            pygithub src/01_sign_commit_using_github_api.py
+            --volume $(pwd):/app \
+            pygithub src/05_commit_using_the_gitpython_package_without_signing.py
