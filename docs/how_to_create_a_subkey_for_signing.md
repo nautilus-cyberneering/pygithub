@@ -114,7 +114,72 @@ Then, you can replace your git config:
 
 You need to upload again the public key to GitHub to import also the subkey, otherwise you new commits using the subkey will be shown as unverified.
 
-TODO: you should remove all the capabilities from the primary key except for "Certify" ([C]).
+You should remove all the capabilities from the primary key except for "Certify" ([C]). You can do it by editing the primary key in expert mode. You have to use the option `change-usage` which is a "hidden" option (not listed with the `help` command)
+
+```shell
+gpg --expert --edit-key 88966A5B8C01BD04F3DA440427304EDD6079B81C
+gpg (GnuPG) 2.2.19; Copyright (C) 2019 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+sec  rsa4096/27304EDD6079B81C
+     created: 2021-11-19  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/5B6BDD35BEDFBF6F
+     created: 2021-11-19  expires: never       usage: E   
+ssb  rsa4096/3F39AA1432CA6AD7
+     created: 2021-11-26  expires: never       usage: S   
+[ultimate] (1). A committer <committer@example.com>
+
+gpg> change-usage
+Changing usage of the primary key.
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate 
+Current allowed actions: Sign Certify 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? S
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate 
+Current allowed actions: Certify 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? Q
+
+sec  rsa4096/27304EDD6079B81C
+     created: 2021-11-19  expires: never       usage: C   
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/5B6BDD35BEDFBF6F
+     created: 2021-11-19  expires: never       usage: E   
+ssb  rsa4096/3F39AA1432CA6AD7
+     created: 2021-11-26  expires: never       usage: S   
+[ultimate] (1). A committer <committer@example.com>
+
+gpg> save
+```
+
+After editing the key you should see only the `[C]` capability on the primary key.
+
+```shell
+gpg -k
+/home/josecelano/.gnupg/pubring.kbx
+-----------------------------------
+pub   rsa4096 2021-11-19 [C]
+      88966A5B8C01BD04F3DA440427304EDD6079B81C
+uid           [ultimate] A committer <committer@example.com>
+sub   rsa4096 2021-11-19 [E]
+sub   rsa4096 2021-11-26 [S]
+```
 
 ## Links
 
@@ -125,3 +190,4 @@ TODO: you should remove all the capabilities from the primary key except for "Ce
 - [GPG - Subkeys](https://blog.programster.org/gpg-subkeys)
 - [GPG Subkeys](https://oguya.ch/posts/2016-04-01-gpg-subkeys/)
 - [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/)
+- [Generating More Secure GPG Keys: Rationale](https://spin.atomicobject.com/2013/10/23/secure-gpg-keys/)
